@@ -14,7 +14,7 @@ const fetchUserName = (data, cb) => {
 }
 
 const fetchRepo = (url) => {
-  return fetch(url.repos_url)
+  return fetch(`${url.repos_url}?page=1&per_page=100`)
   .then(res => res.json())
   .then(res => ({
     user: url,
@@ -35,14 +35,13 @@ const fetchRepo = (url) => {
 // }
 
 class App extends Component {
-  state = { loginMessage: null, picked: [], pickedCount: null, repo: {} }
+  state = { loginMessage: null, picked: null, pickedCount: null, repo: {} }
 
   handleSubmitSearch(context) {
     fetchUserName(context).then(val => {
         this.setState({
           ...this.state,
-          ...val,
-          picked: val.repos.filter(item => item.name.indexOf(context.repo) !== -1)
+          ...val
         })
         return val;
       })
@@ -51,7 +50,6 @@ class App extends Component {
 
   handleGetAuthoreRepos(context) {
     fetchUserName(context).then(val => {
-      console.log(val)
         this.setState({
           prePicked: val.repos,
           user: val.user
@@ -62,13 +60,16 @@ class App extends Component {
   }
 
   filteredLength() {
-    let { filteredObj, picked } = this.state;
-    let value = !!filteredObj.value ? filteredObj.value : picked.length;
+    // let { filteredObj, picked } = this.state;
+    // let value = !!filteredObj.value ? filteredObj.value : picked.length;
     
-    this.setState({
-        pickedCount: value
-    })
+    // this.setState({
+    //     pickedCount: value
+    // })
+
   }
+
+
 
   render() {
     let {
@@ -78,6 +79,8 @@ class App extends Component {
        prePicked, 
        user 
     } = this.state;
+
+    console.log(picked)
 
     return (
       <div className="App">
@@ -103,8 +106,8 @@ class App extends Component {
           <div className="repositories">
           <h3 className="content__title">Repositories:</h3>
           <div className="result">
-            {picked.length
-              ? picked.filter((item, i) => pickedCount !== null ? pickedCount > i : true).map((item, i) => <RepoCard data={item} key={i}/>)
+            {picked
+              ? <RepoCard data={picked}/>
               : <div>No repo now</div>
             }
           </div>

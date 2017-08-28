@@ -3,6 +3,7 @@ import React from 'react';
 export const SearchIssueForm = (props) => {
     let { prePicked } = props.self.state;
 
+      
     const handleSubmit = (e) => {
         e.preventDefault()
         props.submitSearch({
@@ -12,6 +13,7 @@ export const SearchIssueForm = (props) => {
     }
 
     const findRepoForAutocomplete = (e) => {
+      
       this.select.classList.add('active')
       props.handleGetAuthoreRepos({
           name: this.name.value,
@@ -23,16 +25,19 @@ export const SearchIssueForm = (props) => {
 
     const pickRepos = (e) => {
       this.repo.value = e.target.textContent;
-      console.log(this)
-      fetch(`https://api.github.com/repos/${this.name.value}/${this.repo.value}`)
+
+      fetch(`https://api.github.com/repos/${this.name.value}/${this.repo.value}?page=1&per_page=100`)
       .then(res => res.json())
       .then(data => {
+        props.self.setState({
+          picked: data
+        })
         return data
       })
       .catch(err => console.log(err))
       this.select.classList.remove('active')
     }
-
+    console.log(prePicked)
     return (
       <form className="search-issue" onSubmit={handleSubmit}>
       <div className="search-issue__fieldset">
