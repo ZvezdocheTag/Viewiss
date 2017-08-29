@@ -17,16 +17,6 @@ export const UserCard = (props) => {
             <div className="user-card__name">{name}</div>
             <div className="user-card__login">{login}</div>
             <a href={html_url} className="user-card__link">{html_url}</a>
-            <div className="user-card__activity">
-                <div>
-                    <span>gist</span>
-                    <div className="user-card__marker">{public_gists}</div>
-                </div>
-                <div>
-                    <span>repos</span>
-                    <div className="user-card__marker"> {public_repos}</div>
-                </div>
-            </div>
         </div>
     )
 }

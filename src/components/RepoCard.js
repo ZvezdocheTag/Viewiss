@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 
 export const RepoCard = (props) => {
-    let {name, created_at, id} = props.data;
+    let {name, description, updated_at, language, html_url} = props.data;
     return (
         <div className="repo-card"> 
-            <div className="repo-card__name">{name}</div>
-            <div className="repo-card__date">{created_at}</div>
-            <div className="repo-card__id">{id}</div>
+            <a href={html_url} className="repo-card__name">{name}</a>
+            <div className="repo-card__description">{description}</div>
+            <div className="repo-card__language">{language}</div>
+            <div className="repo-card__update">
+                <span>Last update:</span>
+                <span>
+                    {
+                    updated_at.indexOf('T') !== -1
+                        ? updated_at.slice(0, updated_at.indexOf('T'))
+                        : updated_at
+                      }
+                </span>
+            </div>
         </div>
     )
 }

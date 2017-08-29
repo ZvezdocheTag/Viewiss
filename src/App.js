@@ -4,43 +4,34 @@ import './App.css';
 import { SearchIssueForm } from './components/SearchIssueForm'
 import { RepoCard } from './components/RepoCard'
 import { UserCard } from './components/UserCard'
+import { IssuesList } from './components/IssuesList'
 
 
-const fetchUserName = (data, cb) => {
-  return fetch(`https://api.github.com/users/${data.name}`)
+const fetchUserRepos = (data, cb) => {
+  return fetch(`https://api.github.com/users/${data.name}/repos?page=1&per_page=10`)
     .then(res =>  res.json())
-    .then(reps => fetchRepo(reps))
+    .then(reps => {
+      return ({
+        user: !!reps.length ? reps[0].owner : 'none',
+        repos: reps
+      })
+    })
     .catch(err => console.log(err))
 }
 
-const fetchRepo = (url) => {
-  return fetch(`${url.repos_url}?page=1&per_page=100`)
+const fetchIssues = (data) => {
+  return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues`)
   .then(res => res.json())
-  .then(res => ({
-    user: url,
-    repos: res
-  }))
+  .then(res => data)
   .catch(err => console.log(err))
 }
 
-// const fetchRepo = (repo) => {
-//   return fetch(url.repos_url)
-//   .then(res => res.json())
-//   .then(res => ({
-//     user: url,
-//     repos: res
-//   }))
-//   .catch(err => console.log(err))
-
-// }
-
 class App extends Component {
-  state = { loginMessage: null, picked: null, pickedCount: null, repo: {} }
+  state = { loginMessage: null, picked: null, repos: [], repo: {}, issue: [] }
 
   handleSubmitSearch(context) {
-    fetchUserName(context).then(val => {
+    fetchUserRepos(context).then(val => {
         this.setState({
-          ...this.state,
           ...val
         })
         return val;
@@ -49,10 +40,10 @@ class App extends Component {
   }
 
   handleGetAuthoreRepos(context) {
-    fetchUserName(context).then(val => {
+    fetchUserRepos(context).then(val => {
+      console.log(val)
         this.setState({
-          prePicked: val.repos,
-          user: val.user
+          ...val
         })
         return val;
       })
@@ -77,17 +68,18 @@ class App extends Component {
        picked, 
        filteredObj, 
        prePicked, 
-       user 
+       user,
+       issue,
+       repos
     } = this.state;
 
-    console.log(picked)
-
+    console.log(this)
     return (
       <div className="App">
         <header className="header">
             <div className="header__inner">
                 <div className="logo">
-                <a href="#">Searche-issue</a>
+                <a href="#">Searchiss</a>
               </div>
               <div className="search-form">
                   <SearchIssueForm submitSearch={this.handleSubmitSearch.bind(this)}  handleGetAuthoreRepos={this.handleGetAuthoreRepos.bind(this)} self={this}/>
@@ -115,16 +107,17 @@ class App extends Component {
           <div className="issues">
           <h3 className="content__title">Issues:</h3>
             <div className="issues__filters">
-              <div className="issues__count">
+              {/* <div className="issues__count">
                   <input type="number" ref={obj => this.state.filteredObj = obj}/>
-                  <button onClick={this.filteredLength.bind(this)}>Uuuu</button>
-              </div>
+                  <button className="issues-btn issues-btn--filter" onClick={this.filteredLength.bind(this)}>Count</button>
+              </div> */}
               <div className="issues__status">
            
                   <button className="issues-btn issues-btn--open">Open</button>    
                   <button className="issues-btn issues-btn--close">Close</button>    
               </div>
             </div>
+            <IssuesList issues={issue}/>
           </div>
         </section>
 
