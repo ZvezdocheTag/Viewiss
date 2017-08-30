@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 export const UserCard = (props) => {
-    console.log(props.data)
+    // console.log(props.data)
     let {
         avatar_url, 
         html_url, 

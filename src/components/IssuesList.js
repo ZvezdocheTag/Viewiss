@@ -20,9 +20,20 @@ const IssueCard = (props) =>
     </div>
 
 
-export const IssuesList = (props) => 
-    <div className="issue-list">
+export const IssuesList = (props) => {
+    const { issues } = props;
+
+    if(issues.length) {
+        return             <div className="issue-list">
         {
             props.issues.map((item, i) => <IssueCard data={item} key={i}/>)
         }
-    </div>
+        </div>
+
+    } else {
+        return <div className="issue-list">
+            <li>No issues in the repository</li>
+        </div>
+    }
+
+}

@@ -7,16 +7,20 @@ import { UserCard } from './components/UserCard'
 import { IssuesList } from './components/IssuesList'
 
 
-const fetchUserRepos = (data, cb) => {
-  return fetch(`https://api.github.com/users/${data.name}/repos?page=1&per_page=10`)
-    .then(res =>  res.json())
-    .then(reps => {
-      return ({
-        user: !!reps.length ? reps[0].owner : 'none',
-        repos: reps
-      })
-    })
-    .catch(err => console.log(err))
+
+const fetchUser = (data) => {
+  return fetch(`https://api.github.com/users/${data.name}`)
+  .then(res =>  res.json())
+  .then(reps => reps)
+  .catch(err => console.log(err))
+}
+
+const fetchRepos = (val, pager) => {
+  console.log(`${val.repos_url}?page=${pager}&per_page=50`)
+  return fetch(`${val.repos_url}?page=${pager}&per_page=50`)
+  .then(res =>  res.json())
+  .then(res =>  res)
+  .catch(err => console.log(err))
 }
 
 const fetchIssues = (data) => {
@@ -27,27 +31,49 @@ const fetchIssues = (data) => {
 }
 
 class App extends Component {
-  state = { loginMessage: null, picked: null, repos: [], repo: {}, issue: [] }
+  state = { 
+    loginMessage: null, 
+    picked: null, 
+    repos: [], repo: {}, 
+    issue: [],
+    repoPage: 1
+   }
 
   handleSubmitSearch(context) {
-    fetchUserRepos(context).then(val => {
-        this.setState({
-          ...val
-        })
-        return val;
+    let current = this.state.repos;
+    // fetchUserRepos(context).then(val => {
+    //     this.setState({
+    //       ...val,
+    //       repos: [...val.repos, ...current]
+    //     })
+    //     return val;
+    //   })
+    // .catch(err => console.log(err))
+  }
+
+  handleFetchRepos(val, repoPage) {
+    console.log(val, repoPage, "S")
+    fetchRepos(val, repoPage)
+    .then(res =>  {
+      this.setState({repos: [...res]})
+      return res;
+    }).catch(err => console.log(err))
+  }
+
+  handleFetchUser(context) {
+    fetchUser(context).then(val => {
+      this.setState({
+        user: val
       })
+      return val
+    })
+    .then(val => this.handleFetchRepos(val, context.repoPage))
     .catch(err => console.log(err))
   }
 
   handleGetAuthoreRepos(context) {
-    fetchUserRepos(context).then(val => {
-      console.log(val)
-        this.setState({
-          ...val
-        })
-        return val;
-      })
-    .catch(err => console.log(err))
+    console.log(context,"Sd")
+    this.handleFetchUser(context);
   }
 
   filteredLength() {
@@ -72,8 +98,7 @@ class App extends Component {
        issue,
        repos
     } = this.state;
-
-    console.log(this)
+    console.log(this, "RENDER")
     return (
       <div className="App">
         <header className="header">

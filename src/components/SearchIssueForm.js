@@ -1,39 +1,57 @@
 import React from 'react';
 
 const fetchIssues = (data) => {
-  return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues`)
+  return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues?page=1&per_page=100`)
   .then(res => res.json())
   .then(res => data)
   .catch(err => console.log(err))
 }
 
+const ButtonLoad = (props) => {
+  
+  if(typeof props.data.user !== "undefined") {
+    return props.data.user.public_repos > props.data.repos.length ? <button onClick={props.loadMore}>Load more</button> : <div>NONONO</div>
+  } else {
+    return <div>ZOZOZO</div>
+  }
+}
 export const SearchIssueForm = (props) => {
-    let { repos } = props.self.state;
+    let { repos, repoPage, user } = props.self.state;
     const handleSubmit = (e) => {
         e.preventDefault()
         props.submitSearch({
             name: this.name.value,
-            repo: this.repo.value
+            repo: this.repo.value,
+            repoPage: repoPage
         })
     }
 
     const findRepoForAutocomplete = (e) => {
       this.select.classList.add('active')
+
+
       props.handleGetAuthoreRepos({
           name: this.name.value,
-          repo: this.repo.value
+          repo: this.repo.value,
+          repoPage: repoPage
       })
     }
     const fineNameInSelect = (e) => {
-      // let filtered = repos.filter((item, i) => item.name.indexOf(e.target.value) !== -1);
+      let filtered = repos.filter((item, i) => item.name.indexOf(e.target.value) !== -1);
 
-      // if(filtered.length === 1) {
-      //   props.self.setState({
-      //     repos: repos.map(item => item.id === filtered[0].id ? {...item, activeItem: 'active'} : item)
-      //   })
-      // }
+      if(filtered.length === 1) {
+        props.self.setState({
+          repos: repos.map(item => item.id === filtered[0].id ? {...item, activeItem: 'focus'} : {...item, activeItem: ''} )
+        })
+      }
     }
 
+    const loadMore = (e) => {
+      props.self.setState({
+        repoPage: repoPage + 1
+      }) 
+      findRepoForAutocomplete()
+    }
     const pickRepos = (e) => {
       this.repo.value = e.target.textContent;
 
@@ -75,9 +93,10 @@ export const SearchIssueForm = (props) => {
         <ul className={`repo-autocomplete` } ref={(select) => this.select = select}>
           {
             typeof repos !== "undefined"
-             ? repos.map((item, i) => <li className={`repo-autocomplete__item ${item.activeItem}`} onClick={pickRepos} key={i}>{item.name}</li>)
+             ? repos.map((item, i) => <li className={`repo-autocomplete__item ${typeof item.activeItem === "undefined" ? '' : item.activeItem}`} onClick={pickRepos} key={i}>{item.name}</li>)
              : false
           }
+          <ButtonLoad data={props.self.state} loadMore={loadMore}/>
         </ul>
       </div>
       <button className="search-issue__submit" type="submit">Search</button>

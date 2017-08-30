@@ -35,6 +35,9 @@ button {
 .repo-autocomplete__item:hover {
   background-color: #dfdfdf;
 }
+.repo-autocomplete__item.focus {
+  background-color: #F25F5C;
+}
 .repo-card {
   border: 1px solid grey;
   padding: 40px 15px;
