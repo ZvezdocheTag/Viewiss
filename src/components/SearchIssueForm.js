@@ -10,9 +10,11 @@ const fetchIssues = (data) => {
 const ButtonLoad = (props) => {
   
   if(typeof props.data.user !== "undefined") {
-    return props.data.user.public_repos > props.data.repos.length ? <button onClick={props.loadMore}>Load more</button> : <div>NONONO</div>
+    return props.data.user.public_repos > props.data.repos.length ? <button className="btn-load-more"onClick={props.loadMore}>Load more</button> : null
   } else {
-    return <div>ZOZOZO</div>
+    return <div className="cssload-jumping">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
   }
 }
 export const SearchIssueForm = (props) => {
@@ -26,14 +28,12 @@ export const SearchIssueForm = (props) => {
         })
     }
 
-    const findRepoForAutocomplete = (e) => {
+    const findRepoForAutocomplete = (loadMore) => {
       this.select.classList.add('active')
-
-
       props.handleGetAuthoreRepos({
           name: this.name.value,
           repo: this.repo.value,
-          repoPage: repoPage
+          repoPage: !!loadMore ? repoPage: repoPage + 1 
       })
     }
     const fineNameInSelect = (e) => {
@@ -47,11 +47,9 @@ export const SearchIssueForm = (props) => {
     }
 
     const loadMore = (e) => {
-      props.self.setState({
-        repoPage: repoPage + 1
-      }) 
-      findRepoForAutocomplete()
+      findRepoForAutocomplete(false)
     }
+
     const pickRepos = (e) => {
       this.repo.value = e.target.textContent;
 

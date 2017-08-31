@@ -16,8 +16,7 @@ const fetchUser = (data) => {
 }
 
 const fetchRepos = (val, pager) => {
-  console.log(`${val.repos_url}?page=${pager}&per_page=50`)
-  return fetch(`${val.repos_url}?page=${pager}&per_page=50`)
+  return fetch(`${val.repos_url}?page=${pager}&per_page=30`)
   .then(res =>  res.json())
   .then(res =>  res)
   .catch(err => console.log(err))
@@ -36,7 +35,10 @@ class App extends Component {
     picked: null, 
     repos: [], repo: {}, 
     issue: [],
-    repoPage: 1
+    repoPage: 1,
+    user: {
+      id: 'none'
+    }
    }
 
   handleSubmitSearch(context) {
@@ -52,18 +54,20 @@ class App extends Component {
   }
 
   handleFetchRepos(val, repoPage) {
-    console.log(val, repoPage, "S")
+    let { repos, user } = this.state;
     fetchRepos(val, repoPage)
     .then(res =>  {
-      this.setState({repos: [...res]})
+      this.setState({repos: [...repos, ...res]})
       return res;
     }).catch(err => console.log(err))
   }
 
   handleFetchUser(context) {
     fetchUser(context).then(val => {
+      console.log(val , this.state.user)
       this.setState({
-        user: val
+        user: val,
+        repos: val.id !== this.state.user.id ? [] : this.state.repos
       })
       return val
     })
@@ -98,7 +102,7 @@ class App extends Component {
        issue,
        repos
     } = this.state;
-    console.log(this, "RENDER")
+    // console.log(this, "RENDER")
     return (
       <div className="App">
         <header className="header">
