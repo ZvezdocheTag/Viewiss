@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 export const RepoCard = (props) => {
     let {name, description, updated_at, language, html_url} = props.data;

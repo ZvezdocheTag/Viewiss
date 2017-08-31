@@ -18,9 +18,11 @@ img {
 }
 .user, .repositories {
   width: 25%;
+  box-sizing: border-box;
 }
 .issues {
   width: 50%;
+  box-sizing: border-box;
 }
 button {
   background-color: #F25F5C;
@@ -39,8 +41,8 @@ button {
   background-color: #F25F5C;
 }
 .repo-card {
-  border: 1px solid grey;
-  padding: 40px 15px;
+  /* border: 1px solid grey; */
+  padding-right: 15px;
 }
 .repo-card__update > span {
   display: block;
@@ -75,7 +77,7 @@ button {
   position: absolute;
   max-height: 200px;
   overflow: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
   list-style: none;
   text-align: left;
   border: 1px solid #222;
@@ -98,8 +100,8 @@ button {
   min-height: 25px;
 }
 .issue-list {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  /* padding-top: 20px;
+  padding-bottom: 20px; */
 }
 .issue-card {
   margin-bottom: 10px;
@@ -167,6 +169,7 @@ h4 {
 
 .user-card__img {
   margin-bottom: 10px;
+  border-radius: 5px;
 }
 .user-card__name {
   font-size: 24px;
@@ -252,6 +255,10 @@ h4 {
   width: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.issues__filters {
+  margin-bottom: 30px;
 }
 .header__inner,
 .issues__filters,
@@ -416,4 +423,51 @@ h4 {
 	100% {
 		-moz-transform: scale(0);
 	}
+}
+
+@media (max-width: 1000px) {
+  .content, .search-issue {
+    flex-wrap: wrap;
+  }
+  .user, .repositories {
+    width: 50%;
+  }
+  .issues {
+    margin-left: auto;
+  }
+  .search-issue__fieldset input {
+    width: auto;
+  }
+  .search-issue__fieldset , .search-issue__submit {
+    width: 60%;
+    max-width: 330px;
+    margin-bottom: 10px;
+  }
+  .search-issue__fieldset {
+    margin-right: 0;
+    margin-left: 20px;
+  }
+  .search-issue {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 750px) {
+  .header__inner {
+    flex-wrap: wrap;
+  }
+  .search-form {
+    justify-content: center;
+    width: 100%;
+  }
+  .search-issue {
+    justify-content: center;
+  }
+  .search-issue__fieldset , .search-issue__submit {
+    width: 100%;
+    margin-left: 0;
+  }
+  .user, .repositories ,.issues {
+    width: 100%;
+  }
 }

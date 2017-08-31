@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 const IssueCard = (props) => 
     <div className="issue-card">
@@ -24,7 +24,18 @@ export const IssuesList = (props) => {
     const { issues } = props;
 
     if(issues.length) {
-        return             <div className="issue-list">
+        return <div className="issue-list">
+            <div className="issues__filters">
+              {/* <div className="issues__count">
+                  <input type="number" ref={obj => this.state.filteredObj = obj}/>
+                  <button className="issues-btn issues-btn--filter" onClick={this.filteredLength.bind(this)}>Count</button>
+              </div> */}
+              <div className="issues__status">
+           
+                  <button className="issues-btn issues-btn--open">Open</button>    
+                  <button className="issues-btn issues-btn--close">Close</button>    
+              </div>
+            </div>
         {
             props.issues.map((item, i) => <IssueCard data={item} key={i}/>)
         }
@@ -32,7 +43,7 @@ export const IssuesList = (props) => {
 
     } else {
         return <div className="issue-list">
-            <li>No issues in the repository</li>
+            <div>No issues in the repository</div>
         </div>
     }
 

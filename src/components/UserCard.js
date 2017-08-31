@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 export const UserCard = (props) => {
     // console.log(props.data)
@@ -6,9 +6,7 @@ export const UserCard = (props) => {
         avatar_url, 
         html_url, 
         login, 
-        name, 
-        public_gists, 
-        public_repos
+        name,
     } = props.data;
 
     return (

@@ -1,12 +1,5 @@
 import React from 'react';
 
-const fetchIssues = (data) => {
-  return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues?page=1&per_page=100`)
-  .then(res => res.json())
-  .then(res => data)
-  .catch(err => console.log(err))
-}
-
 const ButtonLoad = (props) => {
   
   if(typeof props.data.user !== "undefined") {
@@ -18,7 +11,7 @@ const ButtonLoad = (props) => {
   }
 }
 export const SearchIssueForm = (props) => {
-    let { repos, repoPage, user } = props.self.state;
+    let { repos, repoPage } = props.self.state;
     const handleSubmit = (e) => {
         e.preventDefault()
         props.submitSearch({
@@ -29,13 +22,25 @@ export const SearchIssueForm = (props) => {
     }
 
     const findRepoForAutocomplete = (loadMore) => {
+      if(this.name.value === '') return;
       this.select.classList.add('active')
       props.handleGetAuthoreRepos({
           name: this.name.value,
           repo: this.repo.value,
-          repoPage: !!loadMore ? repoPage: repoPage + 1 
+          repoPage: repoPage
       })
     }
+
+    const loadMoreRepos = () => {
+      props.self.setState({
+        repoPage: repoPage + 1
+      })
+  
+      props.handleLoadMoreRepos({
+          repoPage: repoPage + 1
+      })
+    }
+
     const fineNameInSelect = (e) => {
       let filtered = repos.filter((item, i) => item.name.indexOf(e.target.value) !== -1);
 
@@ -47,7 +52,7 @@ export const SearchIssueForm = (props) => {
     }
 
     const loadMore = (e) => {
-      findRepoForAutocomplete(false)
+      loadMoreRepos()
     }
 
     const pickRepos = (e) => {
@@ -77,13 +82,13 @@ export const SearchIssueForm = (props) => {
       <form className="search-issue" onSubmit={handleSubmit}>
       <div className="search-issue__fieldset">
         <lable className="search-issue__title">user</lable>
-        <input type="text" className="search-issue__field" ref={(name) => {this.name = name;}} placeholder="name"/>
+        <input type="text" className="search-issue__field field--user-name" ref={(name) => {this.name = name;}} placeholder="name"/>
       </div>
       <div className="search-issue__fieldset">
         <lable className="search-issue__title">repository</lable>
         <input 
         type="text" 
-        className="search-issue__field" 
+        className="search-issue__field field--user-repo" 
         ref={(repo) => this.repo = repo} 
         onChange={fineNameInSelect}
         placeholder="repository" 

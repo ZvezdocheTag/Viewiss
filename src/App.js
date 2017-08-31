@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { SearchIssueForm } from './components/SearchIssueForm'
 import { RepoCard } from './components/RepoCard'
@@ -22,12 +21,12 @@ const fetchRepos = (val, pager) => {
   .catch(err => console.log(err))
 }
 
-const fetchIssues = (data) => {
-  return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues`)
-  .then(res => res.json())
-  .then(res => data)
-  .catch(err => console.log(err))
-}
+// const fetchIssues = (data) => {
+//   return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues`)
+//   .then(res => res.json())
+//   .then(res => data)
+//   .catch(err => console.log(err))
+// }
 
 class App extends Component {
   state = { 
@@ -35,6 +34,7 @@ class App extends Component {
     picked: null, 
     repos: [], repo: {}, 
     issue: [],
+    dataFetching: false,
     repoPage: 1,
     user: {
       id: 'none'
@@ -42,7 +42,7 @@ class App extends Component {
    }
 
   handleSubmitSearch(context) {
-    let current = this.state.repos;
+    // let current = this.state.repos;
     // fetchUserRepos(context).then(val => {
     //     this.setState({
     //       ...val,
@@ -53,30 +53,41 @@ class App extends Component {
     // .catch(err => console.log(err))
   }
 
-  handleFetchRepos(val, repoPage) {
+  handleLoadMoreRepos(repoPage) {
     let { repos, user } = this.state;
-    fetchRepos(val, repoPage)
+    
+    fetchRepos(user, repoPage.repoPage)
     .then(res =>  {
       this.setState({repos: [...repos, ...res]})
       return res;
     }).catch(err => console.log(err))
   }
 
+  handleFetchRepos(val, repoPage) {
+    fetchRepos(val, repoPage)
+    .then(res =>  {
+      this.setState({repos: res})
+      return res;
+    }).catch(err => console.log(err))
+  }
+
   handleFetchUser(context) {
     fetchUser(context).then(val => {
-      console.log(val , this.state.user)
+      if(val.id === this.state.user.id ) {
+        return null
+      }
       this.setState({
         user: val,
-        repos: val.id !== this.state.user.id ? [] : this.state.repos
+        repoPage: val.id !== this.state.user.id ? 1 : this.state.repoPage
       })
+
       return val
     })
-    .then(val => this.handleFetchRepos(val, context.repoPage))
+    .then(val => this.handleFetchRepos(val, this.state.repoPage))
     .catch(err => console.log(err))
   }
 
   handleGetAuthoreRepos(context) {
-    console.log(context,"Sd")
     this.handleFetchUser(context);
   }
 
@@ -90,17 +101,28 @@ class App extends Component {
 
   }
 
+  componentDidMount = () => {
+    const select = document.querySelector('.repo-autocomplete');
 
+    window.addEventListener('click', function(e) {
+      let val = e.target.classList.value;
+
+      if(!!e.target.closest('.repo-autocomplete') || val.indexOf('field--user-repo') !== -1) {
+        return;
+      } 
+      
+      if(select.classList.contains('active')) {
+        select.classList.remove('active')
+      }
+    })
+  }
+  
 
   render() {
-    let {
-       pickedCount, 
+    let { 
        picked, 
-       filteredObj, 
-       prePicked, 
        user,
        issue,
-       repos
     } = this.state;
     // console.log(this, "RENDER")
     return (
@@ -111,7 +133,11 @@ class App extends Component {
                 <a href="#">Searchiss</a>
               </div>
               <div className="search-form">
-                  <SearchIssueForm submitSearch={this.handleSubmitSearch.bind(this)}  handleGetAuthoreRepos={this.handleGetAuthoreRepos.bind(this)} self={this}/>
+                  <SearchIssueForm 
+                  submitSearch={this.handleSubmitSearch.bind(this)}  
+                  handleLoadMoreRepos={this.handleLoadMoreRepos.bind(this)}  
+                  handleGetAuthoreRepos={this.handleGetAuthoreRepos.bind(this)} 
+                  self={this}/>
               </div>
             </div>
         </header>
@@ -120,7 +146,7 @@ class App extends Component {
             <h3 className="content__title">User:</h3>
             <div>
             {
-              typeof user !== 'undefined' ?  <UserCard data={user}/> : false
+              user.id !== 'none' ?  <UserCard data={user}/> : <div>No picked user</div>
             }
             </div>
           </div>
@@ -135,17 +161,6 @@ class App extends Component {
           </div>
           <div className="issues">
           <h3 className="content__title">Issues:</h3>
-            <div className="issues__filters">
-              {/* <div className="issues__count">
-                  <input type="number" ref={obj => this.state.filteredObj = obj}/>
-                  <button className="issues-btn issues-btn--filter" onClick={this.filteredLength.bind(this)}>Count</button>
-              </div> */}
-              <div className="issues__status">
-           
-                  <button className="issues-btn issues-btn--open">Open</button>    
-                  <button className="issues-btn issues-btn--close">Close</button>    
-              </div>
-            </div>
             <IssuesList issues={issue}/>
           </div>
         </section>
