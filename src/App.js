@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { SearchIssueForm } from './components/SearchIssueForm'
+import { fetchIssues } from './components/SearchIssueForm'
 import { RepoCard } from './components/RepoCard'
 import { UserCard } from './components/UserCard'
 import { IssuesList } from './components/IssuesList'
@@ -21,36 +22,32 @@ const fetchRepos = (val, pager) => {
   .catch(err => console.log(err))
 }
 
-// const fetchIssues = (data) => {
-//   return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues`)
-//   .then(res => res.json())
-//   .then(res => data)
-//   .catch(err => console.log(err))
-// }
+
 
 class App extends Component {
-  state = { 
-    loginMessage: null, 
-    picked: null, 
-    repos: [], repo: {}, 
-    issue: [],
-    dataFetching: false,
-    repoPage: 1,
-    user: {
-      id: 'none'
-    }
-   }
+  constructor(props) {
+    super(props);
+    this.state = { 
+      loginMessage: null, 
+      picked: null, 
+      repos: [], repo: {}, 
+      issue: [],
+      dataFetching: false,
+      repoPage: 1,
+      state: 'open',
+      user: {
+        id: 'none'
+      }
+     }
+     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
+     this.handleLoadMoreRepos = this.handleLoadMoreRepos.bind(this)
+     this.handleGetAuthoreRepos = this.handleGetAuthoreRepos.bind(this)
+     this.toggleIssueState = this.toggleIssueState.bind(this)
+  }
+
 
   handleSubmitSearch(context) {
-    // let current = this.state.repos;
-    // fetchUserRepos(context).then(val => {
-    //     this.setState({
-    //       ...val,
-    //       repos: [...val.repos, ...current]
-    //     })
-    //     return val;
-    //   })
-    // .catch(err => console.log(err))
+
   }
 
   handleLoadMoreRepos(repoPage) {
@@ -91,15 +88,6 @@ class App extends Component {
     this.handleFetchUser(context);
   }
 
-  filteredLength() {
-    // let { filteredObj, picked } = this.state;
-    // let value = !!filteredObj.value ? filteredObj.value : picked.length;
-    
-    // this.setState({
-    //     pickedCount: value
-    // })
-
-  }
 
   componentDidMount = () => {
     const select = document.querySelector('.repo-autocomplete');
@@ -116,7 +104,21 @@ class App extends Component {
       }
     })
   }
-  
+  toggleIssueState(e) {
+    this.setState({
+      state: e.target.dataset.value
+    })
+    fetchIssues({
+      name: this.state.user.login,
+      repo: this.state.picked.name,
+      state: this.state.state
+    }).then(res => {
+      this.setState({
+        issue: res
+      })
+    })
+    .catch(err => console.log(err))
+  }
 
   render() {
     let { 
@@ -124,19 +126,19 @@ class App extends Component {
        user,
        issue,
     } = this.state;
-    // console.log(this, "RENDER")
+
     return (
       <div className="App">
         <header className="header">
             <div className="header__inner">
                 <div className="logo">
-                <a href="#">Searchiss</a>
+                <a href="#">Viewiss</a>
               </div>
               <div className="search-form">
                   <SearchIssueForm 
-                  submitSearch={this.handleSubmitSearch.bind(this)}  
-                  handleLoadMoreRepos={this.handleLoadMoreRepos.bind(this)}  
-                  handleGetAuthoreRepos={this.handleGetAuthoreRepos.bind(this)} 
+                  submitSearch={this.handleSubmitSearch}  
+                  handleLoadMoreRepos={this.handleLoadMoreRepos}  
+                  handleGetAuthoreRepos={this.handleGetAuthoreRepos} 
                   self={this}/>
               </div>
             </div>
@@ -145,13 +147,13 @@ class App extends Component {
           <div className="user">
             <h3 className="content__title">User:</h3>
             <div>
-            {
-              user.id !== 'none' ?  <UserCard data={user}/> : <div>No picked user</div>
-            }
+              {
+                user.id !== 'none' ?  <UserCard data={user}/> : <div>No picked user</div>
+              }
             </div>
           </div>
           <div className="repositories">
-          <h3 className="content__title">Repositories:</h3>
+          <h3 className="content__title">Repository:</h3>
           <div className="result">
             {picked
               ? <RepoCard data={picked}/>
@@ -161,7 +163,7 @@ class App extends Component {
           </div>
           <div className="issues">
           <h3 className="content__title">Issues:</h3>
-            <IssuesList issues={issue}/>
+            <IssuesList issues={issue} toggleIssueState={this.toggleIssueState}/>
           </div>
         </section>
 

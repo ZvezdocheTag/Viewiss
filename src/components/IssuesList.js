@@ -21,7 +21,7 @@ const IssueCard = (props) =>
 
 
 export const IssuesList = (props) => {
-    const { issues } = props;
+    const { issues, toggleIssueState } = props;
 
     if(issues.length) {
         return <div className="issue-list">
@@ -32,8 +32,20 @@ export const IssuesList = (props) => {
               </div> */}
               <div className="issues__status">
            
-                  <button className="issues-btn issues-btn--open">Open</button>    
-                  <button className="issues-btn issues-btn--close">Close</button>    
+                  <button 
+                    className="issues-btn issues-btn--open"
+                    data-value="open"
+                    onClick={toggleIssueState}
+                  >
+                  Open
+                  </button>    
+                  <button 
+                  className="issues-btn issues-btn--close"
+                  data-value="closed" 
+                  onClick={toggleIssueState}
+                  > 
+                  Close
+                  </button>    
               </div>
             </div>
         {

@@ -10,8 +10,16 @@ const ButtonLoad = (props) => {
           </div>
   }
 }
+// Если в родительском элементе нет стейта или refs
+export function fetchIssues(data) {
+  return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues?page=1&per_page=30&state=${data.state}`)
+  .then(res => res.json())
+  .then(res => res)
+  .catch(err => console.log(err))
+}
+
 export const SearchIssueForm = (props) => {
-    let { repos, repoPage } = props.self.state;
+    let { repos, repoPage, state } = props.self.state;
     const handleSubmit = (e) => {
         e.preventDefault()
         props.submitSearch({
@@ -56,47 +64,73 @@ export const SearchIssueForm = (props) => {
     }
 
     const pickRepos = (e) => {
-      this.repo.value = e.target.textContent;
+      let id = +e.target.dataset.id;
+      let picked = repos.filter(item => item.id === id)[0];
 
-      fetch(`https://api.github.com/repos/${this.name.value}/${this.repo.value}?page=1&per_page=200`)
-      .then(res => res.json())
-      .then(data => {
-        props.self.setState({
-          picked: data
-        })
-        return data
+      props.self.setState({
+        picked: picked
       })
-      .catch(err => console.log(err))
 
-      fetch(`https://api.github.com/repos/${this.name.value}/${this.repo.value}/issues`)
-      .then(res => res.json())
-      .then(res => {
-        props.self.setState({
-          issue: res
+      if(picked.has_issues) {
+        fetchIssues({
+          name: picked.owner.login,
+          repo: picked.name,
+          state: state
+        }).then(res => {
+          props.self.setState({
+            issue: res
+          })
         })
-      })
-      .catch(err => console.log(err))
+        .catch(err => console.log(err))
+      }
+
+      this.repo.value = picked.name;
       this.select.classList.remove('active')
+
+      // fetch(`https://api.github.com/repos/${this.name.value}/${this.repo.value}/issues`)
+      // .then(res => res.json())
+      // .then(res => {
+      //   props.self.setState({
+      //     issue: res
+      //   })
+      // })
+      // .catch(err => console.log(err))
+      
     }
     return (
       <form className="search-issue" onSubmit={handleSubmit}>
       <div className="search-issue__fieldset">
         <lable className="search-issue__title">user</lable>
-        <input type="text" className="search-issue__field field--user-name" ref={(name) => {this.name = name;}} placeholder="name"/>
+        <input 
+          type="text" 
+          className="search-issue__field field--user-name" 
+          ref={name => this.name = name} 
+          placeholder="name"
+        />
       </div>
       <div className="search-issue__fieldset">
         <lable className="search-issue__title">repository</lable>
         <input 
-        type="text" 
-        className="search-issue__field field--user-repo" 
-        ref={(repo) => this.repo = repo} 
-        onChange={fineNameInSelect}
-        placeholder="repository" 
-        onFocus={findRepoForAutocomplete}/>
+          type="text" 
+          className="search-issue__field field--user-repo" 
+          ref={(repo) => this.repo = repo} 
+          onChange={fineNameInSelect}
+          placeholder="repository" 
+          onFocus={findRepoForAutocomplete}
+        />
         <ul className={`repo-autocomplete` } ref={(select) => this.select = select}>
           {
             typeof repos !== "undefined"
-             ? repos.map((item, i) => <li className={`repo-autocomplete__item ${typeof item.activeItem === "undefined" ? '' : item.activeItem}`} onClick={pickRepos} key={i}>{item.name}</li>)
+             ? repos.map(
+               (item, i) => 
+                <li 
+                    className={`repo-autocomplete__item ${typeof item.activeItem === "undefined" ? '' : item.activeItem}`}
+                    onClick={pickRepos} 
+                    data-id={item.id}
+                    key={item.id}>
+                    {item.name}
+                </li>
+              )
              : false
           }
           <ButtonLoad data={props.self.state} loadMore={loadMore}/>
