@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { SelectList } from './SelectList'
 
 export const InputFindRepo = (props) => {
-
     let { state, repos, pickRepos, repoPage, userName } = props;
+    let select = document.querySelector('.repo-autocomplete');
     
     const findRepoForAutocomplete = (loadMore) => {
         if(userName === '') return;
-        // this.select.classList.add('active')
+        select.classList.add('active')
         props.handleGetAuthoreRepos({
             name: userName,
             repo: this.repo.value,
@@ -39,6 +39,10 @@ export const InputFindRepo = (props) => {
         loadMoreRepos()
       }
 
+      const setPickedName = (name) => {
+          this.repo.value = name;
+      }
+     
     return (
       <div className="search-issue__fieldset">
           <lable className="search-issue__title">repository</lable>
@@ -50,18 +54,14 @@ export const InputFindRepo = (props) => {
             placeholder="repository" 
             onFocus={findRepoForAutocomplete}
           />
-            {
-              typeof repos !== "undefined"
-               ? 
                <SelectList 
+                self={props.self}
                 state={state}
+                setPickedName={setPickedName}
                 repos={repos}
-                pickRepos={pickRepos}
+                statusSelect={''}
                 loadMore={loadMore}
-               /> : false
-            }
-            
-          
+                />
         </div>
     )
   }

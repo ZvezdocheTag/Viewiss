@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import {  fetchIssues } from './components/form'
+import {  fetchIssues } from './components/form/SelectList'
 import SearchIssueForm from './components/form'
 import { RepoCard } from './components/RepoCard'
 import { UserCard } from './components/UserCard'
@@ -47,16 +47,13 @@ class App extends Component {
         id: 'none'
       }
      }
-     this.handleSubmitSearch = this.handleSubmitSearch.bind(this)
      this.handleLoadMoreRepos = this.handleLoadMoreRepos.bind(this)
      this.handleGetAuthoreRepos = this.handleGetAuthoreRepos.bind(this)
      this.toggleIssueState = this.toggleIssueState.bind(this)
   }
 
 
-  handleSubmitSearch(context) {
 
-  }
 
   handleLoadMoreRepos(repoPage) {
     let { repos, user } = this.state;
@@ -110,7 +107,7 @@ class App extends Component {
 
 
   componentDidMount = () => {
-    // const select = document.querySelector('.repo-autocomplete');
+    const select = document.querySelector('.repo-autocomplete');
 
     // window.addEventListener('click', function(e) {
     //   let val = e.target.classList.value;
@@ -157,7 +154,6 @@ class App extends Component {
               </div>
               <div className="search-form">
                   <SearchIssueForm 
-                  submitSearch={this.handleSubmitSearch}  
                   handleLoadMoreRepos={this.handleLoadMoreRepos}  
                   handleGetAuthoreRepos={this.handleGetAuthoreRepos} 
                   self={this}/>
