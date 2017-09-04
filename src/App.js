@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import { SearchIssueForm } from './components/SearchIssueForm'
-import { fetchIssues } from './components/SearchIssueForm'
+import {  fetchIssues } from './components/form'
+import SearchIssueForm from './components/form'
 import { RepoCard } from './components/RepoCard'
 import { UserCard } from './components/UserCard'
 import { IssuesList } from './components/IssuesList'
@@ -10,9 +10,14 @@ import { IssuesList } from './components/IssuesList'
 
 const fetchUser = (data) => {
   return fetch(`https://api.github.com/users/${data.name}`)
-  .then(res =>  res.json())
+  .then(res =>  {
+    if(res.status === 404) {
+      return res;
+    }
+    return res.json()
+  })
   .then(reps => reps)
-  .catch(err => console.log(err))
+  .catch(err => err)
 }
 
 const fetchRepos = (val, pager) => {
@@ -28,6 +33,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
+      valudation: {
+        user: true
+      },
       loginMessage: null, 
       picked: null, 
       repos: [], repo: {}, 
@@ -70,11 +78,23 @@ class App extends Component {
 
   handleFetchUser(context) {
     fetchUser(context).then(val => {
-      if(val.id === this.state.user.id ) {
+      console.log(val, "CALL")
+      if(val.id === this.state.user.id) {
         return null
       }
+      if(val.status === 404) {
+        this.setState({
+          valudation: {user: false},
+          repos: [],
+          user: {id: 'none'},
+          repoPage: 1
+        })
+        return null;
+      }
+
       this.setState({
         user: val,
+        valudation: {user: true},
         repoPage: val.id !== this.state.user.id ? 1 : this.state.repoPage
       })
 
@@ -90,19 +110,19 @@ class App extends Component {
 
 
   componentDidMount = () => {
-    const select = document.querySelector('.repo-autocomplete');
+    // const select = document.querySelector('.repo-autocomplete');
 
-    window.addEventListener('click', function(e) {
-      let val = e.target.classList.value;
+    // window.addEventListener('click', function(e) {
+    //   let val = e.target.classList.value;
 
-      if(!!e.target.closest('.repo-autocomplete') || val.indexOf('field--user-repo') !== -1) {
-        return;
-      } 
+    //   if(!!e.target.closest('.repo-autocomplete') || val.indexOf('field--user-repo') !== -1) {
+    //     return;
+    //   } 
       
-      if(select.classList.contains('active')) {
-        select.classList.remove('active')
-      }
-    })
+    //   if(select.classList.contains('active')) {
+    //     select.classList.remove('active')
+    //   }
+    // })
   }
   toggleIssueState(e) {
     this.setState({
@@ -127,6 +147,7 @@ class App extends Component {
        issue,
     } = this.state;
 
+    console.log(this)
     return (
       <div className="App">
         <header className="header">

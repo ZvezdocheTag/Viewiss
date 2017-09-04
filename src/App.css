@@ -295,7 +295,11 @@ h4 {
 		-webkit-background-clip: padding-box;
 		-moz-background-clip: padding-box;
 }
-
+.search-issue__validation-label {
+  color: rgb(242,95,92);
+  /* margin-top: 5px; */
+  height: 20px;
+}
 .cssload-jumping span:nth-child(1) {
 	animation: scale 1.15s 0.12s infinite cubic-bezier(0.6, -0.28, 0.735, 0.045);
 		-o-animation: scale 1.15s 0.12s infinite cubic-bezier(0.6, -0.28, 0.735, 0.045);
