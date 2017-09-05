@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { SelectList } from './SelectList'
 
 export const InputFindRepo = (props) => {
-    let { state, repos, pickRepos, repoPage, userName } = props;
+    let { state, repos, repoPage, userName } = props;
     let select = document.querySelector('.repo-autocomplete');
     
     const findRepoForAutocomplete = (loadMore) => {
@@ -14,12 +14,12 @@ export const InputFindRepo = (props) => {
             repoPage: repoPage
         })
       }
-  
+
       const loadMoreRepos = () => {
         props.self.setState({
           repoPage: repoPage + 1
         })
-    
+        console.log(props)
         props.handleLoadMoreRepos({
             repoPage: repoPage + 1
         })

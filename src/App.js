@@ -52,9 +52,6 @@ class App extends Component {
      this.toggleIssueState = this.toggleIssueState.bind(this)
   }
 
-
-
-
   handleLoadMoreRepos(repoPage) {
     let { repos, user } = this.state;
     
@@ -75,7 +72,6 @@ class App extends Component {
 
   handleFetchUser(context) {
     fetchUser(context).then(val => {
-      console.log(val, "CALL")
       if(val.id === this.state.user.id) {
         return null
       }
@@ -84,7 +80,9 @@ class App extends Component {
           valudation: {user: false},
           repos: [],
           user: {id: 'none'},
-          repoPage: 1
+          repoPage: 1,
+          picked: null,
+          issue: []
         })
         return null;
       }
@@ -97,7 +95,9 @@ class App extends Component {
 
       return val
     })
-    .then(val => this.handleFetchRepos(val, this.state.repoPage))
+    .then(val => {
+        this.handleFetchRepos(val, this.state.repoPage)
+    })
     .catch(err => console.log(err))
   }
 
@@ -105,30 +105,32 @@ class App extends Component {
     this.handleFetchUser(context);
   }
 
-
   componentDidMount = () => {
     const select = document.querySelector('.repo-autocomplete');
 
-    // window.addEventListener('click', function(e) {
-    //   let val = e.target.classList.value;
+    window.addEventListener('click', function(e) {
+      let val = e.target.classList.value;
 
-    //   if(!!e.target.closest('.repo-autocomplete') || val.indexOf('field--user-repo') !== -1) {
-    //     return;
-    //   } 
+      if(!!e.target.closest('.repo-autocomplete') || val.indexOf('field--user-repo') !== -1) {
+        return;
+      } 
       
-    //   if(select.classList.contains('active')) {
-    //     select.classList.remove('active')
-    //   }
-    // })
+      if(select.classList.contains('active')) {
+        select.classList.remove('active')
+      }
+    })
   }
+
   toggleIssueState(e) {
+    const state = this.state;
+
     this.setState({
       state: e.target.dataset.value
     })
     fetchIssues({
-      name: this.state.user.login,
-      repo: this.state.picked.name,
-      state: this.state.state
+      name: state.user.login,
+      repo: state.picked.name,
+      state: state.state
     }).then(res => {
       this.setState({
         issue: res
@@ -144,7 +146,6 @@ class App extends Component {
        issue,
     } = this.state;
 
-    console.log(this)
     return (
       <div className="App">
         <header className="header">
@@ -154,9 +155,10 @@ class App extends Component {
               </div>
               <div className="search-form">
                   <SearchIssueForm 
-                  handleLoadMoreRepos={this.handleLoadMoreRepos}  
-                  handleGetAuthoreRepos={this.handleGetAuthoreRepos} 
-                  self={this}/>
+                    handleLoadMoreRepos={this.handleLoadMoreRepos}  
+                    handleGetAuthoreRepos={this.handleGetAuthoreRepos} 
+                    self={this}
+                  />
               </div>
             </div>
         </header>

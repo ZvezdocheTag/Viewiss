@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { ButtonLoad } from './ButtonLoad'
 // Если в родительском элементе нет стейта или refs
 
@@ -10,7 +10,7 @@ export function fetchIssues(data) {
 }
 
 export const SelectList = (props) => {
-    let { repos, state, loadMore, statusSelect, setPickedName } = props;
+    let { repos, state, statusSelect, setPickedName } = props;
     const pickRepos = (e) => {
       let id = +e.target.dataset.id;
       let picked = repos.filter(item => item.id === id)[0];
@@ -51,7 +51,7 @@ export const SelectList = (props) => {
         </li>
       )
       }
-      <ButtonLoad data={state} loadMore={loadMore}/>
+      <ButtonLoad data={props.self} loadMore={props.loadMore}/>
       </ul>
     )
   }

@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { ButtonLoad } from './ButtonLoad'
 import { InputFindRepo } from './InputFindRepo'
 import { InputFindUser } from './InputFindUser'
-import { SelectList } from './InputFindUser'
 
 export default class SearchIssueForm extends Component {
     constructor() {
@@ -20,8 +18,8 @@ export default class SearchIssueForm extends Component {
 
      handleSubmit (e) {
         e.preventDefault()
-        let { repoName, userName } = this.state;
-        let { repoPage } = this.props.self.state;
+        // let { repoName, userName } = this.state;
+        // let { repoPage } = this.props.self.state;
     }
 
      setName(e){
@@ -49,6 +47,7 @@ export default class SearchIssueForm extends Component {
             <form className="search-issue" onSubmit={this.handleSubmit}>
               <InputFindUser user={valudation.user} setName={this.setName}/>
               <InputFindRepo 
+                handleLoadMoreRepos={this.props.handleLoadMoreRepos}
                 state={state} 
                 repos={repos}
                 handleGetAuthoreRepos={this.props.handleGetAuthoreRepos}
