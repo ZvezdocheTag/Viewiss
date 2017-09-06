@@ -10,12 +10,14 @@ export function fetchIssues(data) {
 }
 
 export const SelectList = (props) => {
-    let { repos, state, statusSelect, setPickedName } = props;
+    let { state, statusSelect, setPickedName, self  } = props;
+    let selectFilter = self.state.selectFilter;
+    let repos = selectFilter.length > 0 ? selectFilter :  props.repos;
+
     const pickRepos = (e) => {
       let id = +e.target.dataset.id;
       let picked = repos.filter(item => item.id === id)[0];
 
-      // console.log(props)
       props.self.setState({
         picked: picked
       })
@@ -36,7 +38,7 @@ export const SelectList = (props) => {
       setPickedName(picked.name)
       select.classList.remove('active')
     }
-
+    
     return (
       <ul className={`repo-autocomplete ${statusSelect}`}>
       {

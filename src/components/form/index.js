@@ -8,7 +8,8 @@ export default class SearchIssueForm extends Component {
         this.state = {
             repoName: '',
             userName: '',
-            select: null
+            select: null,
+            selectList: [],
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);

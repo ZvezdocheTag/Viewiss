@@ -40,6 +40,7 @@ class App extends Component {
       picked: null, 
       repos: [], repo: {}, 
       issue: [],
+      selectFilter: [],
       dataFetching: false,
       repoPage: 1,
       state: 'open',

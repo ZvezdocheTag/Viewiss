@@ -19,22 +19,25 @@ export const InputFindRepo = (props) => {
         props.self.setState({
           repoPage: repoPage + 1
         })
-        console.log(props)
         props.handleLoadMoreRepos({
             repoPage: repoPage + 1
         })
       }
-  
+
       const fineNameInSelect = (e) => {
         let filtered = repos.filter((item, i) => item.name.indexOf(e.target.value) !== -1);
-  
-        if(filtered.length === 1) {
+
           props.self.setState({
-            repos: repos.map(item => item.id === filtered[0].id ? {...item, activeItem: 'focus'} : {...item, activeItem: ''} )
+            selectFilter: filtered
           })
-        }
+        
       }
-  
+
+      const nullFilteredRepoList = () => {
+        props.self.setState({
+          selectFilter: []
+        })
+      }
       const loadMore = (e) => {
         loadMoreRepos()
       }
@@ -53,6 +56,7 @@ export const InputFindRepo = (props) => {
             onChange={fineNameInSelect}
             placeholder="repository" 
             onFocus={findRepoForAutocomplete}
+            onBlur={nullFilteredRepoList}
           />
                <SelectList 
                 self={props.self}
