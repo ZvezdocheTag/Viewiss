@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { InputFindRepo } from './InputFindRepo'
 import { InputFindUser } from './InputFindUser'
 
+import { fetchIssues } from './SelectList'
+
 export default class SearchIssueForm extends Component {
     constructor() {
         super();
@@ -19,8 +21,31 @@ export default class SearchIssueForm extends Component {
 
      handleSubmit (e) {
         e.preventDefault()
-        // let { repoName, userName } = this.state;
-        // let { repoPage } = this.props.self.state;
+        let { 
+            repos,
+            state, 
+        } = this.props.self.state;
+        let { repoName, userName } = this.state;
+
+        let picked = repos.filter(item => item.name === repoName)[0];
+
+        this.props.self.setState({
+          picked: picked
+        })
+        if(picked.has_issues) {
+          fetchIssues({
+            name: picked.owner.login,
+            repo: picked.name,
+            state: state
+          }).then(res => {
+            this.props.self.setState({
+              issue: res
+            })
+          })
+          .catch(err => console.log(err))
+        }
+        let select = document.querySelector('.repo-autocomplete');
+        select.classList.remove('active')
     }
 
      setName(e){
@@ -54,6 +79,7 @@ export default class SearchIssueForm extends Component {
                 handleGetAuthoreRepos={this.props.handleGetAuthoreRepos}
                 userName={this.state.userName}
                 repoPage={repoPage}
+                setRepo={this.setRepo}
                 self={this.props.self}
               />
             <button className="search-issue__submit" type="submit">Search</button>

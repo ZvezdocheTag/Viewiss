@@ -24,6 +24,7 @@ img {
   width: 50%;
   box-sizing: border-box;
 }
+.btn-load-more,
 button {
   background-color: #F25F5C;
   border: none;
@@ -99,8 +100,7 @@ button {
   min-height: 25px;
 }
 .issue-list {
-  /* padding-top: 20px;
-  padding-bottom: 20px; */
+  max-height: 850px;
 }
 .issue-card {
   margin-bottom: 10px;
@@ -162,7 +162,7 @@ h4 {
 .search-issue__submit,
 .logo {
   display: block;
-  margin-top: 22px;
+  margin-top: 23px;
   height: 40px;
 }
 
@@ -240,6 +240,7 @@ h4 {
 .search-issue__field {
   display: block;
   margin-bottom: 5px;
+
 }
 .search-issue__field {
   box-sizing: border-box;
@@ -249,11 +250,15 @@ h4 {
   font-size: 24px;
   padding: 0 15px;
   margin-bottom: 0;
+  border-color: rgb(238, 238, 238);
 }
 .btn-load-more {
   width: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
+  display: block;
+  text-align: center;
+  text-decoration: none;
 }
 
 .issues__filters {

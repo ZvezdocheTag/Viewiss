@@ -2,7 +2,7 @@ import React from 'react'
 import { SelectList } from './SelectList'
 
 export const InputFindRepo = (props) => {
-    let { state, repos, repoPage, userName } = props;
+    let { state, repos, repoPage, userName, setRepo } = props;
     let select = document.querySelector('.repo-autocomplete');
     
     const findRepoForAutocomplete = (loadMore) => {
@@ -26,14 +26,14 @@ export const InputFindRepo = (props) => {
 
       const fineNameInSelect = (e) => {
         let filtered = repos.filter((item, i) => item.name.indexOf(e.target.value) !== -1);
-
           props.self.setState({
             selectFilter: filtered
           })
         
       }
 
-      const nullFilteredRepoList = () => {
+      const nullFilteredRepoList = (e) => {
+        setRepo(e)
         props.self.setState({
           selectFilter: []
         })

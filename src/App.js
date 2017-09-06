@@ -45,7 +45,8 @@ class App extends Component {
       repoPage: 1,
       state: 'open',
       user: {
-        id: 'none'
+        id: 'none',
+        login: ''
       }
      }
      this.handleLoadMoreRepos = this.handleLoadMoreRepos.bind(this)
@@ -101,9 +102,14 @@ class App extends Component {
     })
     .catch(err => console.log(err))
   }
-
+  changeToUpperCase(str) {
+    return str.toUpperCase();
+  }
   handleGetAuthoreRepos(context) {
-    this.handleFetchUser(context);
+    console.log(context)
+    if(this.changeToUpperCase(context.name) !== this.changeToUpperCase(this.state.user.login)) {
+      this.handleFetchUser(context);
+    }
   }
 
   componentDidMount = () => {
@@ -124,14 +130,16 @@ class App extends Component {
 
   toggleIssueState(e) {
     const state = this.state;
-
+    if(state.state === e.target.dataset.value) {
+      return;
+    }
     this.setState({
       state: e.target.dataset.value
     })
     fetchIssues({
       name: state.user.login,
       repo: state.picked.name,
-      state: state.state
+      state: e.target.dataset.value
     }).then(res => {
       this.setState({
         issue: res
