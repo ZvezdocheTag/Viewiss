@@ -2,9 +2,17 @@ import React from 'react'
 import { SelectList } from './SelectList'
 
 export const InputFindRepo = (props) => {
-    let { state, repos, repoPage, userName, setRepo, setValue, repoValue } = props;
-    let select = document.querySelector('.repo-autocomplete');
-    
+    const { 
+      state, 
+      repos, 
+      repoPage, 
+      userName, 
+      setRepo, 
+      setValue,
+      self,
+      handleLoadMoreRepos, 
+      repoValue } = props,
+      select = document.querySelector('.repo-autocomplete');
     
     const findRepoForAutocomplete = (loadMore) => {
         if(userName === '') return;
@@ -17,10 +25,10 @@ export const InputFindRepo = (props) => {
       }
 
       const loadMoreRepos = () => {
-        props.self.setState({
+        self.setState({
           repoPage: repoPage + 1
         })
-        props.handleLoadMoreRepos({
+        handleLoadMoreRepos({
             repoPage: repoPage + 1
         })
       }
@@ -32,6 +40,7 @@ export const InputFindRepo = (props) => {
       const nullFilteredRepoList = (e) => {
         setRepo(e)
       }
+
       const loadMore = (e) => {
         loadMoreRepos()
       }
@@ -44,30 +53,29 @@ export const InputFindRepo = (props) => {
         if(repoValue === '') {
           return repos
         }
-
         return repos.filter(item => item.name.indexOf(repoValue) !== -1);
       }
   
-    return (
-      <div className="search-issue__fieldset">
-          <lable className="search-issue__title">repository</lable>
-          <input 
-            type="text" 
-            className="search-issue__field field--user-repo" 
-            ref={(repo) => this.repo = repo} 
-            onChange={fineNameInSelect}
-            placeholder="repository" 
-            onFocus={findRepoForAutocomplete}
-            onBlur={nullFilteredRepoList}
-          />
-               <SelectList 
-                self={props.self}
-                state={state}
-                setPickedName={setPickedName}
-                repos={filtered()}
-                statusSelect={''}
-                loadMore={loadMore}
-                />
-        </div>
-    )
+      return (
+        <div className="search-issue__fieldset">
+            <lable className="search-issue__title">repository</lable>
+            <input 
+              type="text" 
+              className="search-issue__field field--user-repo" 
+              ref={(repo) => this.repo = repo} 
+              onChange={fineNameInSelect}
+              placeholder="repository" 
+              onFocus={findRepoForAutocomplete}
+              onBlur={nullFilteredRepoList}
+            />
+            <SelectList 
+              self={self}
+              state={state}
+              setPickedName={setPickedName}
+              repos={filtered()}
+              statusSelect={''}
+              loadMore={loadMore}
+            />
+          </div>
+      )
   }

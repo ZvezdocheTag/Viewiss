@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import {  fetchIssues, fetchUser, fetchRepos } from './utils/requests'
-import SearchIssueForm from './components/form'
+import {  fetchIssues } from './utils/requests'
 import { RepoCard } from './components/RepoCard'
 import { UserCard } from './components/UserCard'
 import { IssuesList } from './components/IssuesList'
+import Header from './components/Header'
 
 class App extends Component {
   constructor(props) {
@@ -27,68 +27,7 @@ class App extends Component {
       }
      }
 
-     this.handleLoadMoreRepos = this.handleLoadMoreRepos.bind(this)
-     this.handleGetAuthoreRepos = this.handleGetAuthoreRepos.bind(this)
      this.toggleIssueState = this.toggleIssueState.bind(this)
-  }
-
-  handleLoadMoreRepos(param) {
-    let { repos, user } = this.state;
-    
-    fetchRepos(user, param.repoPage)
-    .then(res =>  {
-      this.setState({repos: [...repos, ...res]})
-      return res;
-    }).catch(err => console.log(err))
-  }
-
-  handleFetchRepos(val, param) {
-    fetchRepos(val, param)
-    .then(res =>  {
-      this.setState({repos: res})
-      return res;
-    }).catch(err => console.log(err))
-  }
-
-  handleFetchUser(context) {
-    fetchUser(context).then(val => {
-      if(val.id === this.state.user.id) {
-        return null
-      }
-      if(val.status === 404) {
-        this.setState({
-          valudation: {user: false},
-          repos: [],
-          user: {id: 'none'},
-          repoPage: 1,
-          picked: null,
-          issue: []
-        })
-        return null;
-      }
-
-      this.setState({
-        user: val,
-        valudation: {user: true},
-        repoPage: val.id !== this.state.user.id ? 1 : this.state.repoPage
-      })
-
-      return val
-    })
-    .then(val => {
-        this.handleFetchRepos(val, this.state.repoPage)
-    })
-    .catch(err => console.log(err))
-  }
-
-  changeToUpperCase(str) {
-    return str.toUpperCase();
-  }
-
-  handleGetAuthoreRepos(context) {
-    if(this.changeToUpperCase(context.name) !== this.changeToUpperCase(this.state.user.login)) {
-      this.handleFetchUser(context);
-    }
   }
 
   componentDidMount = () => {
@@ -97,7 +36,10 @@ class App extends Component {
     window.addEventListener('click', function(e) {
       let val = e.target.classList.value;
 
-      if(!!e.target.closest('.repo-autocomplete') || val.indexOf('field--user-repo') !== -1) {
+      if(
+        !!e.target.closest('.repo-autocomplete') 
+        || val.indexOf('field--user-repo') !== -1
+      ) {
         return;
       } 
       
@@ -108,13 +50,16 @@ class App extends Component {
   }
 
   toggleIssueState(e) {
-    const state = this.state;
+    const { state } = this;
+
     if(state.state === e.target.dataset.value) {
       return;
     }
+
     this.setState({
       state: e.target.dataset.value
     })
+
     fetchIssues({
       name: state.user.login,
       repo: state.picked.name,
@@ -136,26 +81,15 @@ class App extends Component {
 
     return (
       <div className="App">
-        <header className="header">
-            <div className="header__inner">
-                <div className="logo">
-                <a href="#">Viewiss</a>
-              </div>
-              <div className="search-form">
-                  <SearchIssueForm 
-                    handleLoadMoreRepos={this.handleLoadMoreRepos}  
-                    handleGetAuthoreRepos={this.handleGetAuthoreRepos} 
-                    self={this}
-                  />
-              </div>
-            </div>
-        </header>
+        <Header self={this}/>
         <section className="content">
           <div className="user">
             <h3 className="content__title">User:</h3>
             <div>
               {
-                user.id !== 'none' ?  <UserCard data={user}/> : <div>No picked user</div>
+                user.id !== 'none' 
+                  ? <UserCard data={user}/> 
+                  : <div>No picked user</div>
               }
             </div>
           </div>
@@ -170,11 +104,12 @@ class App extends Component {
           </div>
           <div className="issues">
           <h3 className="content__title">Issues:</h3>
-            <IssuesList issues={issue} toggleIssueState={this.toggleIssueState}/>
+            <IssuesList 
+              issues={issue} 
+              toggleIssueState={this.toggleIssueState}
+            />
           </div>
         </section>
-
-
       </div>
     );
   }
