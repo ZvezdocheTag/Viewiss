@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { InputFindRepo } from './InputFindRepo'
 import { InputFindUser } from './InputFindUser'
-
-import { fetchIssues } from './SelectList'
+import { fetchIssues } from '../../utils/requests'
 
 export default class SearchIssueForm extends Component {
     constructor() {
@@ -12,11 +11,13 @@ export default class SearchIssueForm extends Component {
             userName: '',
             select: null,
             selectList: [],
+            repoValue: ''
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.setName= this.setName.bind(this);
         this.setRepo = this.setRepo.bind(this);
+        this.setValue = this.setValue.bind(this);
     }
 
      handleSubmit (e) {
@@ -26,7 +27,6 @@ export default class SearchIssueForm extends Component {
             state, 
         } = this.props.self.state;
         let { repoName, userName } = this.state;
-
         let picked = repos.filter(item => item.name === repoName)[0];
 
         this.props.self.setState({
@@ -61,6 +61,12 @@ export default class SearchIssueForm extends Component {
         })
     }
 
+    setValue(value) {
+        this.setState({
+            repoValue: value
+        })   
+    }
+
     render() {
         let { 
             repos,
@@ -78,7 +84,9 @@ export default class SearchIssueForm extends Component {
                 repos={repos}
                 handleGetAuthoreRepos={this.props.handleGetAuthoreRepos}
                 userName={this.state.userName}
+                repoValue={this.state.repoValue}
                 repoPage={repoPage}
+                setValue={this.setValue}
                 setRepo={this.setRepo}
                 self={this.props.self}
               />

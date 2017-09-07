@@ -1,33 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import {  fetchIssues } from './components/form/SelectList'
+import {  fetchIssues, fetchUser, fetchRepos } from './utils/requests'
 import SearchIssueForm from './components/form'
 import { RepoCard } from './components/RepoCard'
 import { UserCard } from './components/UserCard'
 import { IssuesList } from './components/IssuesList'
-
-
-
-const fetchUser = (data) => {
-  return fetch(`https://api.github.com/users/${data.name}`)
-  .then(res =>  {
-    if(res.status === 404) {
-      return res;
-    }
-    return res.json()
-  })
-  .then(reps => reps)
-  .catch(err => err)
-}
-
-const fetchRepos = (val, pager) => {
-  return fetch(`${val.repos_url}?page=${pager}&per_page=30`)
-  .then(res =>  res.json())
-  .then(res =>  res)
-  .catch(err => console.log(err))
-}
-
-
 
 class App extends Component {
   constructor(props) {
@@ -49,23 +26,24 @@ class App extends Component {
         login: ''
       }
      }
+
      this.handleLoadMoreRepos = this.handleLoadMoreRepos.bind(this)
      this.handleGetAuthoreRepos = this.handleGetAuthoreRepos.bind(this)
      this.toggleIssueState = this.toggleIssueState.bind(this)
   }
 
-  handleLoadMoreRepos(repoPage) {
+  handleLoadMoreRepos(param) {
     let { repos, user } = this.state;
     
-    fetchRepos(user, repoPage.repoPage)
+    fetchRepos(user, param.repoPage)
     .then(res =>  {
       this.setState({repos: [...repos, ...res]})
       return res;
     }).catch(err => console.log(err))
   }
 
-  handleFetchRepos(val, repoPage) {
-    fetchRepos(val, repoPage)
+  handleFetchRepos(val, param) {
+    fetchRepos(val, param)
     .then(res =>  {
       this.setState({repos: res})
       return res;
@@ -102,11 +80,12 @@ class App extends Component {
     })
     .catch(err => console.log(err))
   }
+
   changeToUpperCase(str) {
     return str.toUpperCase();
   }
+
   handleGetAuthoreRepos(context) {
-    console.log(context)
     if(this.changeToUpperCase(context.name) !== this.changeToUpperCase(this.state.user.login)) {
       this.handleFetchUser(context);
     }

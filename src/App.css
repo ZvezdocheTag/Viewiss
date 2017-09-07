@@ -30,6 +30,11 @@ button {
   border: none;
   outline: none;
   color: #fff;
+  cursor: pointer;
+}
+.btn-load-more:hover,
+button:hover {
+  background-color: #F36663;
 }
 .repo-autocomplete__item {
   padding: 5px 0px 5px 20px;

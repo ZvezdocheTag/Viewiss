@@ -2,8 +2,9 @@ import React from 'react'
 import { SelectList } from './SelectList'
 
 export const InputFindRepo = (props) => {
-    let { state, repos, repoPage, userName, setRepo } = props;
+    let { state, repos, repoPage, userName, setRepo, setValue, repoValue } = props;
     let select = document.querySelector('.repo-autocomplete');
+    
     
     const findRepoForAutocomplete = (loadMore) => {
         if(userName === '') return;
@@ -25,18 +26,11 @@ export const InputFindRepo = (props) => {
       }
 
       const fineNameInSelect = (e) => {
-        let filtered = repos.filter((item, i) => item.name.indexOf(e.target.value) !== -1);
-          props.self.setState({
-            selectFilter: filtered
-          })
-        
+        setValue(e.target.value)
       }
 
       const nullFilteredRepoList = (e) => {
         setRepo(e)
-        props.self.setState({
-          selectFilter: []
-        })
       }
       const loadMore = (e) => {
         loadMoreRepos()
@@ -45,7 +39,15 @@ export const InputFindRepo = (props) => {
       const setPickedName = (name) => {
           this.repo.value = name;
       }
-     
+      
+      const filtered = () => {
+        if(repoValue === '') {
+          return repos
+        }
+
+        return repos.filter(item => item.name.indexOf(repoValue) !== -1);
+      }
+  
     return (
       <div className="search-issue__fieldset">
           <lable className="search-issue__title">repository</lable>
@@ -62,7 +64,7 @@ export const InputFindRepo = (props) => {
                 self={props.self}
                 state={state}
                 setPickedName={setPickedName}
-                repos={repos}
+                repos={filtered()}
                 statusSelect={''}
                 loadMore={loadMore}
                 />

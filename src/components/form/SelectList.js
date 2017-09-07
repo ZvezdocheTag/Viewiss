@@ -1,23 +1,14 @@
 import React from 'react'
 import { ButtonLoad } from './ButtonLoad'
+import { fetchIssues } from '../../utils/requests'
 // Если в родительском элементе нет стейта или refs
-
-export function fetchIssues(data) {
-  return fetch(`https://api.github.com/repos/${data.name}/${data.repo}/issues?page=1&per_page=30&state=${data.state}`)
-  .then(res => res.json())
-  .then(res => res)
-  .catch(err => console.log(err))
-}
-
 
 export const SelectList = (props) => {
     let { state, statusSelect, setPickedName, self, repos  } = props;
     let selectFilter = self.state.selectFilter;
-    // let repos = selectFilter.length > 0 ? selectFilter :  props.repos;
 
     const pickReposs = function(e) {
       let id = +e.target.dataset.id;
-     
       let picked = repos.filter(item => item.id === id)[0];
  
       props.self.setState({
