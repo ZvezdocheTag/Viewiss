@@ -26,6 +26,10 @@ export const SelectList = (props) => {
           })
         })
         .catch(err => console.log(err))
+      } else {
+        props.self.setState({
+          issue: []
+        })
       }
       let select = document.querySelector('.repo-autocomplete');
       setPickedName(picked.name)

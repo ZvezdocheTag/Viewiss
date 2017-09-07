@@ -449,7 +449,7 @@ h4 {
     margin-left: auto;
   }
   .search-issue__fieldset input {
-    width: auto;
+    width: 100%;
   }
   .search-issue__fieldset , .search-issue__submit {
     width: 60%;
@@ -459,6 +459,7 @@ h4 {
   .search-issue__fieldset {
     margin-right: 0;
     margin-left: 20px;
+    width: 100%;
   }
   .search-issue {
     justify-content: flex-end;
@@ -469,6 +470,12 @@ h4 {
   .header__inner {
     flex-wrap: wrap;
   }
+  .logo {
+    text-align: center;
+    display: block;
+    width: 100%;
+    margin-bottom: 30px;
+  }
   .search-form {
     justify-content: center;
     width: 100%;
@@ -478,7 +485,9 @@ h4 {
   }
   .search-issue__fieldset , .search-issue__submit {
     width: 100%;
-    margin-left: 0;
+    margin-left: 10px;
+    margin-right: 10px; 
+    
   }
   .user, .repositories ,.issues {
     width: 100%;
