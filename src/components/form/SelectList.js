@@ -1,6 +1,6 @@
 import React from 'react'
 import { ButtonLoad } from './ButtonLoad'
-import { fetchIssues } from '../../utils/requests'
+import { fetchIssues } from '../../helpers/requests'
 
 export const SelectList = (props) => {
     const { 

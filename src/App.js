@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import {  fetchIssues } from './utils/requests'
+import {  fetchIssues } from './helpers/requests'
 import { RepoCard } from './components/RepoCard'
 import { UserCard } from './components/UserCard'
 import { IssuesList } from './components/IssuesList'

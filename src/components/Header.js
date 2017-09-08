@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {  fetchIssues, fetchUser, fetchRepos } from '../utils/requests'
+import {  fetchIssues, fetchUser, fetchRepos } from '../helpers/requests'
 import SearchIssueForm from './form'
 
 function changeToUpperCase(str) {

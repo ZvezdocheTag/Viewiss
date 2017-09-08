@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { InputFindRepo } from './InputFindRepo'
 import { InputFindUser } from './InputFindUser'
-import { fetchIssues } from '../../utils/requests'
+import { fetchIssues } from '../../helpers/requests'
 
 export default class SearchIssueForm extends Component {
     constructor() {
@@ -36,7 +36,7 @@ export default class SearchIssueForm extends Component {
         this.props.self.setState({
           picked: picked
         })
-        
+
         if(typeof picked !== "undefined") {
             if(picked.has_issues) {
               fetchIssues({
@@ -50,6 +50,10 @@ export default class SearchIssueForm extends Component {
               })
               .catch(err => console.log(err))
             }
+        } else {
+            this.props.self.setState({
+                issue: []
+              })
         }
 
         let select = document.querySelector('.repo-autocomplete');
