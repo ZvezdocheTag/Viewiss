@@ -8,6 +8,7 @@ export const SelectList = (props) => {
       statusSelect, 
       setPickedName, 
       self, 
+      setRepo,
       repos  
     } = props;
 
@@ -18,7 +19,7 @@ export const SelectList = (props) => {
       self.setState({
         picked: picked
       })
-
+      setRepo(e, picked.name)
       if(picked.has_issues) {
         fetchIssues({
           name: picked.owner.login,

@@ -74,6 +74,7 @@ export const InputFindRepo = (props) => {
               setPickedName={setPickedName}
               repos={filtered()}
               statusSelect={''}
+              setRepo={setRepo}
               loadMore={loadMore}
             />
           </div>

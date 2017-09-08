@@ -60,9 +60,13 @@ export default class Header extends Component {
 
     handleGetAuthoreRepos(context) {
         let { self } = this.props;
-        if(changeToUpperCase(context.name) !== changeToUpperCase(self.state.user.login)) {
-            this.handleFetchUser(context);
-        }
+        // if(changeToUpperCase(context.name) !== changeToUpperCase(self.state.user.login)) {
+            
+        // }
+        // console.log(self.state.user, context.name)
+        this.handleFetchUser(context);
+
+        
     }
 
     handleLoadMoreRepos(param) {

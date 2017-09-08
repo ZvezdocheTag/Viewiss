@@ -24,24 +24,25 @@ export default class SearchIssueForm extends Component {
         e.preventDefault()
         let { 
             repos,
-            state, 
+            state,
+            picked
         } = this.props.self.state,
 
         { 
             repoName
         } = this.state,
 
-        picked = repos.filter(item => item.name === repoName)[0];
+        pickedRep = repos.filter(item => item.name === repoName)[0];
 
         this.props.self.setState({
-          picked: picked
+          picked: pickedRep
         })
 
-        if(typeof picked !== "undefined") {
-            if(picked.has_issues) {
+        if(typeof pickedRep !== "undefined") {
+            if(pickedRep.has_issues) {
               fetchIssues({
-                name: picked.owner.login,
-                repo: picked.name,
+                name: pickedRep.owner.login,
+                repo: pickedRep.name,
                 state: state
               }).then(res => {
                 this.props.self.setState({
@@ -61,15 +62,16 @@ export default class SearchIssueForm extends Component {
     }
 
      setName(e){
-        let name =  e.target.value;
+        let name =  e.target.value || e;
+        
         this.setState({
             userName: name
         })
     }
-     setRepo(e){
+     setRepo(e, arg){ 
         let repo =  e.target.value;
         this.setState({
-            repoName: repo
+            repoName: repo === 0 ? arg : repo
         })
     }
 
@@ -94,7 +96,7 @@ export default class SearchIssueForm extends Component {
                 handleLoadMoreRepos={this.props.handleLoadMoreRepos}
                 state={state} 
                 repos={repos}
-                handleGetAuthoreRepos={this.props.handleGetAuthoreRepos}
+                handleGetAuthoreRepos={this.props.handleGetAuthoreRepos}W
                 userName={this.state.userName}
                 repoValue={this.state.repoValue}
                 repoPage={repoPage}
