@@ -36,18 +36,20 @@ export default class SearchIssueForm extends Component {
         this.props.self.setState({
           picked: picked
         })
-
-        if(picked.has_issues) {
-          fetchIssues({
-            name: picked.owner.login,
-            repo: picked.name,
-            state: state
-          }).then(res => {
-            this.props.self.setState({
-              issue: res
-            })
-          })
-          .catch(err => console.log(err))
+        
+        if(typeof picked !== "undefined") {
+            if(picked.has_issues) {
+              fetchIssues({
+                name: picked.owner.login,
+                repo: picked.name,
+                state: state
+              }).then(res => {
+                this.props.self.setState({
+                  issue: res
+                })
+              })
+              .catch(err => console.log(err))
+            }
         }
 
         let select = document.querySelector('.repo-autocomplete');

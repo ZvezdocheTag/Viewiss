@@ -362,7 +362,13 @@ h4 {
     margin-right: 10px; 
     
   }
+  .search-issue__fieldset {
+    position: relative;
+  }
   .user, .repositories ,.issues {
+    width: 100%;
+  }
+  .repo-autocomplete {
     width: 100%;
   }
 }

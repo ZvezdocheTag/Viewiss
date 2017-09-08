@@ -44,6 +44,8 @@ export default class Header extends Component {
 
             self.setState({
             user: val,
+            picked: null,
+            issue: [],
             valudation: {user: true},
             repoPage: val.id !== self.state.user.id ? 1 : self.state.repoPage
             })
